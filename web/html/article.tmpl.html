@@ -1,0 +1,228 @@
+{{- template "web/html/layouts/root.tmpl.html" . -}}
+
+{{- define "og" -}}
+<meta property="og:title" content="{{.Article.Title}}">
+<meta property="og:description" content="{{.Article.Hook}}">
+<meta name="description" content="{{.Article.Hook}}">
+{{ if .Article.Image }}
+<meta property="og:image" content="{{.AbsoluteURL}}{{.Article.Image}}">
+{{ else }}
+<meta property="og:image" content="{{.AbsoluteURL}}{{.FavIcon}}">
+{{ end }}
+<meta property="og:url" content="{{.AbsoluteURL}}/{{.Article.Slug}}">
+<link rel="canonical" href="{{.AbsoluteURL}}/{{.Article.Slug}}">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="{{FormatTimeRFC3339UTC .Article.PublishedAt}}">
+<meta property="article:author" content="https://coolstercodes.com">
+{{range .Article.Tags}}
+<meta property="article:tag" content="{{.}}">
+{{end}}
+{{- end -}}
+
+{{- define "title" -}}{{.Article.Title}}{{.TitleSuffix}}{{- end -}}
+
+{{- define "article_content" -}}
+
+<div class="mb-12 mt-0 px-4">
+    <div class="container max-w-[950px] mx-auto">
+        <h1 class="font-semibold font-sans leading-none my-8 text-center text-6xl text-white tracking-tighter md:font-normal md:text-8xl">
+            {{.Article.Title}}
+        </h1>
+    </div>
+</div>
+
+<div class="container max-w-[900px] mx-auto mt-8 px-4 xl:max-w-[1125px]">
+    <div class="md:flex">
+        <div class="basis-[170px] flex-grow-0 flex-shrink-0 hidden md:block"> <!-- needed for sticky -->
+            <div class="leading-normal text-xs tracking-tighter sticky text-center text-white top-5">
+                <div class="border-b px-4 pb-4 ">
+                    <div class="font-bold mb-0.5 text-white">Article</div>
+                    <div class="text-myblue">
+                        <a class="hover:border-b-sky-600 hover:text-sky-600 underline" href="javascript:void(0)" onclick="copyText('{{.AbsoluteURL}}/{{.Article.Slug}}')">
+                            {{.Article.Title}} <span class="mx-0.5"><b class="copy text-myblue hover:border-b-sky-600 hover:text-sky-600 underline"></b></span>
+                        </a>
+                        <span
+                            id="copyalert"
+                            class="hidden tooltip absolute left-1/2 -translate-x-1/2 bg-gray-600 text-white text-xs px-2 py-1 rounded opacity-0 transition-opacity duration-300">
+                            Copied!
+                        </span>
+                    </div>
+                </div>
+
+                <!--
+                    It sucks having to nest two flexboxes like this, but it was
+                    the only easy way I could find to make sure the right border
+                    is at 100% height while also making content in each pane
+                    vertically aligned. You can `items-center` instead of
+                    `items-stretch`, but then if the left pane is shorter than
+                    the right, it centers itself, and its border is only partial
+                    height.
+                -->
+                <div class="border-b flex items-stretch text-center ">
+                    <div class="border-r flex-grow ">
+                        <div class="flex h-full items-center">
+                            <div class="px-4 py-4">
+                                <div class="font-bold mb-0.5 text-white">Author</div>
+                                <div class="leading-tight text-myblue">
+                                    <a class="hover:border-b-sky-600 hover:text-sky-600 underline"
+                                        href="/about">Me</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex-grow h-full min-w-0">
+                        <div class="flex items-center">
+                            <div class="px-4 py-4">
+                                <div class="font-bold mb-0.5 text-white">Published</div>
+                                <div class="leading-tight">{{FormatTime .Article.PublishedAt "Jan 2, 2006"}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="font-bold mb-0.5 text-white px-4 py-4">
+                    <p class="mb-2">YouTube<br> <a class="hover:border-b-sky-600 hover:text-sky-600 font-bold text-myblue underline" href="{{ if .Article.YouTube }}{{.Article.YouTube}}{{ else }}https://www.youtube.com/@coolstercodes{{ end }}" target="_blank">@coolstercodes</a></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="pb-4 md:border-l md:flex-grow md:min-w-0 md:pl-8 xl:pr-8 ">
+            
+
+            <div class="hyphens-auto
+                max-w-none
+                prose prose-lg
+                prose-a:font-sans
+                prose-blockquote:text-slate-300
+                prose-img:w-full prose-img:my-0
+                prose-h2:text-xl prose-h2:mb-1 prose-a:prose-h2:border-b-0 prose-a:prose-h2:font-bold prose-h2:text-myblue prose-a:prose-h2:no-underline
+                prose-h3:text-lg prose-h3:mb-1 prose-a:prose-h3:border-b-0 prose-a:prose-h3:font-bold prose-h3:text-myblue prose-a:prose-h3:no-underline
+                prose-h4:text-base prose-h4:mb-1 prose-a:prose-h4:border-b-0 prose-a:prose-h4:font-bold prose-h4:text-myblue prose-a:prose-h4:no-underline
+                prose-hr:my-10 prose-hr:md:-mx-[2rem] prose-hr:md:w-[calc(100%+4rem)]
+                prose-p:font-serif
+                text-[17px]
+                prose-li:my-0
+                prose-figcaption:mt-3
+                prose-p:prose-blockquote:font-sans
+                prose-pre:leading-[1.15rem] prose-pre:text-[0.9rem]
+                prose-strong:text-slate-100
+                prose-ol:font-serif
+                prose-ul:font-serif
+                prose-a:text-myblue
+                prose-a:border-b-myblue
+                hover:prose-a:border-b-sky-600
+                hover:prose-a:text-sky-600
+                prose-code:prose-pre:px-0 prose-code:prose-pre:py-0
+                prose-code:bg-[#414242] prose-code:px-1 prose-code:py-0.5 prose-code:rounded
+                ">
+                {{ if .Article.YouTubeEmbed }}
+                <div class="relative pb-[56.25%] h-0 overflow-hidden w-full">
+                    <iframe class="absolute w-full h-full top-0 left-0 border-0" src="{{.Article.YouTubeEmbed}}">
+                    </iframe>
+                </div>
+                {{ end }}
+
+                <div class="font-bold my-1 text-white text-sm md:hidden">Published {{FormatTime .Article.PublishedAt "January 2, 2006"}}
+                </div>
+                
+                {{.Article.Content}}
+            </div>
+            {{if gt (len .Article.TagCounts) 0}}
+            <div class="pt-4">
+                <div class="flex items-center py-1">
+                    <div class="font-bold mb-0.5 text-white mr-0.5">Tags: </div>
+                    {{range .Article.TagCounts}}
+                    <a class="italic bg-gray-700 rounded-md px-[5px] py-[2px] text-myblue text-sm hover:text-sky-600 mx-0.5"
+                        href="/tags/{{.URLTag}}">#{{.Tag}}</a>
+                    {{end}}
+                </div>
+            </div>
+            {{end}}
+        </div>
+        {{if ne .Article.TOC ""}}
+            <div class="basis-[190px] border-l flex-grow-0 flex-shrink-0 hidden xl:block ">
+                <!--
+                    IMPORTANT: The TOC is duplicated above so that it can be part of
+                    the flexbox at large sizes, but inlined at contents at smaller
+                    ones. Make changes in both places.
+                -->
+                <!-- This is just the normal one on a big screen -->
+                <div class="
+                    mb-3
+                    pl-3
+                    pb-5
+
+                    prose prose-sm
+                    prose-li:my-2
+
+                    prose-ol:prose-li:list-[lower-alpha] prose-ol:prose-li:my-2
+                    prose-a:prose-li:prose-li:font-normal prose-li:prose-li:my-1 prose-li:prose-li:text-[0.65rem] hover:prose-a:prose-li:text-sky-600 hover:prose-a:prose-li:border-b-sky-600
+
+                    prose-ol:prose-li:prose-li:list-[lower-roman]
+                    prose-li:prose-li:prose-li:text-[0.6rem]
+
+                    sticky top-5
+                    text-xs
+                ">
+                    {{.Article.TOC}}
+                </div>
+            </div>
+        {{end}}
+    </div>
+</div>
+
+{{if .Article.Footnotes}}
+<div class="border-t p-8 w-vp ">
+    <div class="container max-w-[650px] mx-auto">
+        <div class="hyphens-auto
+                max-w-none
+                prose prose-sm
+                prose-a:border-b-myblue prose-a:font-sans
+                hover:prose-a:border-b-sky-600
+                hover:prose-a:text-sky-600
+                prose-code:prose-a:text-sm prose-code:prose-p:text-sm
+                prose-p:font-serif
+                prose-strong:font-sans
+                ">
+            {{.Article.Footnotes}}
+        </div>
+    </div>
+</div>
+{{end}}
+
+{{if .Article.Attributions}}
+<div class="border-t p-8 w-vp ">
+    <div class="container max-w-[650px] mx-auto">
+        <div class="hyphens-auto
+                max-w-none
+                prose prose-sm
+                prose-a:border-b-myblue prose-a:font-sans
+                hover:prose-a:text-sky-600
+                prose-p:font-serif
+                prose-strong:font-sans
+                ">
+            <p>
+                {{.Article.Attributions}}
+            </p>
+        </div>
+    </div>
+</div>
+{{end}}
+
+<div class="border-t pb-8 p-8 w-vp ">
+    <div class="container max-w-[650px] mx-auto">
+        <div class="hyphens-auto
+            italic
+            max-w-none
+            prose prose-sm
+            prose-a:border-b-myblue prose-a:font-sans
+            hover:prose-a:text-sky-600
+            prose-p:font-serif
+            ">
+            <p>
+                Thanks for reading! :)
+            </p>
+        </div>
+    </div>
+</div>
+
+{{- end -}}

@@ -1,0 +1,38 @@
+{{- template "web/html/layouts/root.tmpl.html" . -}}
+
+{{- define "og" -}}
+{{- template "web/html/helpers/_og_common.tmpl.html" . -}}
+<meta property="og:title" content="Tags{{.TitleSuffix}}">
+<meta property="og:description" content="Tags on CoolsterCodes.com">
+<meta name="description" content="Tags on CoolsterCodes.com">
+<meta property="og:url" content="{{.AbsoluteURL}}/tags/">
+<link rel="canonical" href="{{.AbsoluteURL}}/tags/">
+{{- end -}}
+
+{{- define "title" -}}Tags{{.TitleSuffix}}{{- end -}}
+
+{{- define "article_content" -}}
+
+<meta name="docfx:rel" content="../">
+<div class="pt-4 pb-4 px-4">
+    <h1 class="prose prose-lg font-normal font-serif text-center text-8xl tracking-tighter
+                prose-a:text-white prose-a:no-underline">
+        Tags
+    </h1>
+</div>
+
+<div class="container max-w-[800px] mx-auto mt-8 px-8">
+    <div class="md:flex">
+        <div class="pb-8 md:flex-grow md:min-w-0 md:pl-6 md:pr-6">
+            {{- range  .TagCount -}}
+            <div class="clear-both mb-9 mt-1.5 text-md text-white">
+                <a class="text-myblue border-b-[1px] border-b-myblue hover:border-b-sky-600 hover:text-sky-600" href="/tags/{{.URLTag}}">
+                    {{.Tag}} ({{.Count}})
+                </a>
+            </div>
+            {{- end -}}
+        </div>
+    </div>
+</div>
+
+{{- end -}}

@@ -1,5 +1,6 @@
 name: Deploy to GitHub Pages
 on:
+  pull_request:
   push:
     branches:
       - main
@@ -10,7 +11,37 @@ permissions:
   pages: write
 
 jobs:
+  check_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          check-latest: true
+          go-version-file: "go.mod"
+
+      - name: Debug
+        run: |
+          echo "github.ref=${{ github.ref }}"
+          echo "go env GOPATH=$(go env GOPATH)"
+          echo "pwd=$(pwd)"
+          echo "GITHUB_WORKSPACE=${GITHUB_WORKSPACE}"
+          echo "HOME=${HOME}"
+
+      - name: Clean
+        run: make clean
+
+      - name: "Go: Install"
+        run: make install
+
+      - name: "Go: Test"
+        run: make test
+
   deploy_prod:
+    if: github.ref == 'refs/heads/master'
     environment:
       name: github-pages
       url: ${{steps.deployment.outputs.page_url}}
